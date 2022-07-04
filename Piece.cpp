@@ -22,7 +22,9 @@ pair<bool, string> King::validMove(int dx, int dy) const{
     if ((abs(dx) == 2 || abs(dx) == 3) && dy == 0){
         return make_pair(true, "castle");
     }
-    else if (abs(dx) == 1 && abs(dy) == 1){
+    else if ((abs(dx) == 1 && abs(dy) == 1)
+            || (abs(dx) == 0 && abs(dy) == 1)
+            || (abs(dx) == 1 && abs(dy) == 0)){
         return make_pair(true, "move");
     }
 

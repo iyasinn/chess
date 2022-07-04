@@ -5,7 +5,7 @@
 
 using namespace std;
 
-TEST(piece){
+TEST(king){
 
     pair<bool, string> output;
 
@@ -17,25 +17,121 @@ TEST(piece){
     for (int dx = -1; dx <= 1; dx++){
         for (int dy = -1; dy <= 1; dy++){
             output = ptr->validMove(dx, dy);
-            ASSERT_EQUAL(output, make_pair(true, "move"));
+            
+            if (dx == 0 && dy == 0){
+                ASSERT_EQUAL(output.first, false);
+                ASSERT_EQUAL(output.second, "none")   
+                continue;          
+            }
+            ASSERT_EQUAL(output.first, true);
+            ASSERT_EQUAL(output.second, "move")
         }
     }
 
-    pair<bool, string> test;
+    // Technically -2, -3 will work as well. 
 
-    test = ptr->validMove(2, 0);
-    ASSERT_EQUAL(test.first, true);
-    ASSERT_EQUAL(test.second, "castle");
+    for (int x : {2, 3, -2, -3}){
+        output = ptr->validMove(x, 0);
+        ASSERT_EQUAL(output.first, true);
+        ASSERT_EQUAL(output.second, "castle");      
 
-    ASSERT_EQUAL(ptr->validMove(3, 0), make_pair(true, "castle"));
-    ASSERT_EQUAL(ptr->validMove(5, 4), make_pair(false, "none"));
+    }
 
+    output = ptr->validMove(5, 4);
+    ASSERT_EQUAL(output.first, false);
+    ASSERT_EQUAL(output.second, "none");
 
-
-
+    // Do I need this?
+    delete ptr;
 }
 
+TEST(queen){
 
+    pair<bool, string> output;
+
+    Piece* ptr = new Queen("white");
+    ASSERT_EQUAL(ptr->getColor(), WHITE);
+    ASSERT_EQUAL(ptr->getName(), QUEEN);  
+
+
+    for (int dx = -3; dx <= 3; dx++){
+        for (int dy = -3; dy <= 3; dy++){
+
+            output = ptr->validMove(dx, dy);
+
+            if (abs(dx) == abs(dy)){
+                ASSERT_EQUAL(output.first, true);
+                ASSERT_EQUAL(output.second, "move")
+            }
+            else if ((dx == 0 and dy != 0) || (dx != 0 && dy == 0)){
+                ASSERT_EQUAL(output.first, true);
+                ASSERT_EQUAL(output.second, "move")
+            }
+            else{
+                ASSERT_EQUAL(output.first, false);
+                ASSERT_EQUAL(output.second, "none")
+            }
+        }
+    }
+
+    delete ptr;
+}
+
+TEST(bishop){
+
+    pair<bool, string> output;
+
+    Piece* ptr = new Bishop("black");
+    ASSERT_EQUAL(ptr->getColor(), BLACK);
+    ASSERT_EQUAL(ptr->getName(), BISHOP);  
+
+
+    for (int dx = -3; dx <= 3; dx++){
+        for (int dy = -3; dy <= 3; dy++){
+
+            output = ptr->validMove(dx, dy);
+
+            if (abs(dx) == abs(dy)){
+                ASSERT_EQUAL(output.first, true);
+                ASSERT_EQUAL(output.second, "move")
+            }
+            else{
+                ASSERT_EQUAL(output.first, false);
+                ASSERT_EQUAL(output.second, "none")
+            }
+        }
+    }
+
+    delete ptr;
+}
+
+TEST(rook){
+
+    pair<bool, string> output;
+
+    Piece* ptr = new Rook("white");
+    ASSERT_EQUAL(ptr->getColor(), WHITE);
+    ASSERT_EQUAL(ptr->getName(), ROOK);  
+
+
+    for (int dx = -3; dx <= 3; dx++){
+        for (int dy = -3; dy <= 3; dy++){
+
+            output = ptr->validMove(dx, dy);
+
+            if ((dx == 0 and dy != 0) || (dx != 0 && dy == 0)){
+                ASSERT_EQUAL(output.first, true);
+                ASSERT_EQUAL(output.second, "move")
+            }
+            else{
+                ASSERT_EQUAL(output.first, false);
+                ASSERT_EQUAL(output.second, "none")
+            }
+        }
+    }
+
+    delete ptr;
+}
 
 
 

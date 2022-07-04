@@ -18,6 +18,9 @@ public:
     std::string getColor() const;
     virtual std::pair<bool, std::string> validMove(int dx, int dy) const = 0;
 
+    // Do I need this?
+    virtual ~Piece(){}
+
 private:
     std::string name;
     std::string color;
@@ -25,37 +28,37 @@ private:
 
 class King : public Piece{
 public:
-    King(std::string colorIn) : Piece("King", colorIn){}
+    King(std::string colorIn) : Piece(KING, colorIn){}
     std::pair<bool, std::string> validMove(int dx, int dy) const override;
 };
 
 class Queen : public Piece{
 public:
-    Queen(std::string colorIn) : Piece("Queen", colorIn){}
+    Queen(std::string colorIn) : Piece(QUEEN, colorIn){}
     std::pair<bool, std::string> validMove(int dx, int dy) const override;
 };
 
 class Pawn : public Piece{
 public:
-    Pawn(std::string colorIn) : Piece("Pawn", colorIn){}
+    Pawn(std::string colorIn) : Piece(PAWN, colorIn){}
     std::pair<bool, std::string> validMove(int dx, int dy) const override;
 };
 
 class Rook : public Piece{
 public:
-    Rook(std::string colorIn) : Piece("Rook", colorIn){}
+    Rook(std::string colorIn) : Piece(ROOK, colorIn){}
     std::pair<bool, std::string> validMove(int dx, int dy) const override;
 };
 
 class Bishop : public Piece{
 public:
-    Bishop(std::string colorIn) : Piece("Bishop", colorIn){}
+    Bishop(std::string colorIn) : Piece(BISHOP, colorIn){}
     std::pair<bool, std::string> validMove(int dx, int dy) const override;
 };
 
 class Knight : public Piece{
 public:
-    Knight(std::string colorIn) : Piece("Knight", colorIn){}
+    Knight(std::string colorIn) : Piece(KNIGHT, colorIn){}
     std::pair<bool, std::string> validMove(int dx, int dy) const override;
 };
 
