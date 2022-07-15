@@ -35,18 +35,20 @@ pair<bool, string> Queen::validMove(int dx, int dy) const{
     if (abs(dx) == abs(dy) || (abs(dx) == 0 && abs(dy) != 0) || (abs(dy) == 0 && abs(dx) != 0)){
         return make_pair(true, "move");
     }
-
     return make_pair(false, "none");
 }
 
 pair<bool, string> Pawn::validMove(int dx, int dy) const{
-    if (abs(dx) == 0 && abs(dy) == 1){
+    if (abs(dx) == 0 && ((dy == 1 && getColor() == WHITE)
+                     || (dy == -1 && getColor() == BLACK))){
         return make_pair(true, "move");
     }
-    else if (abs(dx) == 0 && abs(dy) == 2){
-        return make_pair(true, "twostep");
+    else if (abs(dx) == 0 && ((dy == 2 && getColor() == WHITE)
+                     || (dy == -2 && getColor() == BLACK))){
+        return make_pair(true, "doublemove");
     }
-    else if (abs(dx) == 1 && abs(dy) == 1){
+    else if (abs(dx) == 1 && ((getColor() == WHITE && dy == 1) 
+                     || (getColor() == BLACK && dy == -1))){
         return make_pair(true, "attack");
     }
 
@@ -73,6 +75,5 @@ pair<bool, string> Rook::validMove(int dx, int dy) const{
     if ((dx == 0 && dy != 0) || (dx != 0 && dy == 0)){
         return make_pair(true, "move");
     }
-
     return make_pair(false, "none");
 }

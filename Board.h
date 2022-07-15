@@ -3,7 +3,13 @@
 #include <ostream>
 #include <optional>
 
+template<int BOARD_SIZE>
+bool inBoard(const int row, const int col){
+    return (0 <= row && row < BOARD_SIZE && 0 <= col && col < BOARD_SIZE);
+}
+
 template<typename T, int BOARD_SIZE>
+
 class Board{
 
 public:
@@ -17,19 +23,22 @@ Board(){
     }
 }
 
-// REQUIRES: Pieces is a pointer to a dynamically allocated object, row and col are valid coordinates.
+// REQUIRES: Pieces is a pointer to a dynamically allocated object, row and col are valid coordinates
+//           Note: the coordinates must be actual coordinates, don't worry about underlying array 
 // MODIFIES: board
 // EFFECTS: Places the piece at that specfic spot. 
-void placePiece(T* piece, const int& row, const int& col){
-    assert(piece && abs(row) < BOARD_SIZE && abs(col) < BOARD_SIZE && !board[row][col]);
+void placePiece(T* piece, int row, int col){
+    // Reindexing the row/col and seeing if it's in the board
+    assert(piece && inBoard<BOARD_SIZE>(row -= 1, col -= 1));
     board[row][col] = piece;
 }
 
 // REQUIRES: row and col are valid coordinates
 // MODIFIES: board
-// EFFECTS: Removes the piece at row, col. Deletes it from dynamic memory.  
-void removePiece(const int& row, const int& col){
-    assert(abs(row) < BOARD_SIZE && abs(col) < BOARD_SIZE);
+// EFFECTS: Removes the piece at row, col. Deletes it from dynamic memory.
+//          If no piece at spot, then since this deletes thing, it actually delets from all spots 
+void removePiece(int row, int col){
+    assert(inBoard<BOARD_SIZE>(row -= 1, col -= 1));
     if (board[row][col]){
         delete board[row][col];
         board[row][col] = nullptr;
@@ -40,49 +49,56 @@ void removePiece(const int& row, const int& col){
 // MODIFIES: board
 // EFFECTS: Moves the piece at (row, col) to (endRow, endCol). If there is a piece at (endRow, endCol), 
 //          then the piece at (endRow, endCol) is removed. 
-void movePiece(const int& row, const int& col, const int& endRow, const int& endCol){
-
+void movePiece(int row, int col, int endRow, int endCol){
     // Basic checks
-    assert(abs(row) < BOARD_SIZE && abs(col) < BOARD_SIZE && abs(endRow) < BOARD_SIZE && abs(endCol) < BOARD_SIZE
-                        && board[row][col]);
+    // Don't need to reassign row and col by subtracting one because removePiece and 
+    // placePiece to thats
+    assert(inBoard<BOARD_SIZE>(row - 1, col - 1) 
+            && inBoard<BOARD_SIZE>(endRow - 1, endCol - 1)
+            && board[row][col]);
+    
     removePiece(endRow, endCol);
-    board[endRow][endCol] = board[row][col];
-    board[row][col] = nullptr;
+    placePiece(board[row - 1][col - 1], endRow, endCol);
+    board[row - 1][col - 1] = nullptr;
 }
 
 // REQUIRES: row and col are valid coordinates
 // MODIFIES: N/A
 // EFFECTS: Returns an optional value for the type if it exists at the coordinages. If nothing exists
 //          then an empty value is returned. 
-std::optional<T> operator ()(const int& row, const int& col) const{
-    assert(abs(row) < BOARD_SIZE && abs(col) < BOARD_SIZE);
+std::optional<T> operator ()(int row, int col) const{
+    assert(inBoard<BOARD_SIZE>(row -= 1, col -= 1));
     if (board[row][col]) return *(board[row][col]);
     return {};
 }
 
 // EFFECTS: Destructor for the object
 ~Board(){
-    for (int r = 0; r < BOARD_SIZE; r++){
-        for (int c = 0; c < BOARD_SIZE; c++){
-            removePiece(r, c);
+    for (int row = 1; row <= BOARD_SIZE; row++){
+        for (int col = 1; col <= BOARD_SIZE; col++){
+            removePiece(row, col);
         }
     }
 }
 
 private:
     T* board[BOARD_SIZE][BOARD_SIZE];
-    int numPieces = 0; 
+    int numPieces = 0;
 };
 
 // REQUIRES: os is a valid ostream, board is a valid object, and type T has the extraction operator overloaded
 // MODIFIES: os
-// EFFECTS: Prints the board to the output screen. 
+// EFFECTS: Prints the board to the output screen. in the format 
+//          This function uses the abstraction for the board, so don't worry about 
+//          the unerlying array. Just enter coordintes as if playing a normal game. 
+// (7, 1), (7, 2)
+// (6, 1) 
 template<typename T, int BOARD_SIZE>
 std::ostream& operator<<(std::ostream& os, const Board<T, BOARD_SIZE>& board) {
 
-    for (int row = BOARD_SIZE - 1; row >= 0; row--){
-        os << " " << row + 1 << " ";
-        for (int col = 0; col < BOARD_SIZE; col++){
+    for (int row = BOARD_SIZE; row >= 1; row--){
+        os << std::endl << " " << row << "| ";
+        for (int col = 1; col <= BOARD_SIZE; col++){
             
             if (board(row, col).has_value()){
                 os << board(row, col).value() << " ";
@@ -92,10 +108,18 @@ std::ostream& operator<<(std::ostream& os, const Board<T, BOARD_SIZE>& board) {
             }
 
         }
-        os << std::endl << std::endl;
+
+        if (row != 1) os << "\n  |";
     }
 
-    os << "   ";
+    os << "\n    ";
+
+    for (int col = 1; col <= BOARD_SIZE; col++){
+        os << "__";
+    }
+    
+    os << std::endl;
+    os << "    ";
 
     for (int col = 1; col <= BOARD_SIZE; col++){
         os << col << " ";

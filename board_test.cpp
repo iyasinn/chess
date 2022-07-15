@@ -7,24 +7,26 @@ TEST(make_board){
 
     Board<int, 8> b;
 
-    for (int r = 0; r < 8; r++){
-        for (int c = 0; c < 8; c++){
-            b.placePiece(new int(r + c), r, c);
+    for (int r = 1; r <= 8; r++){
+        for (int c = 1; c <= 8; c++){
+            b.placePiece(new int(((r + c) % 8) + 1), r, c);
         }
     }
-
+    cout << "Testing if the board is actually printing" << endl;
     cout << b << endl << endl << endl;
 
     b.removePiece(3, 4);
-    b.removePiece(0, 0);
+    b.removePiece(1, 1);
     b.removePiece(7, 7);
 
-    cout << b;
+    cout << "Removed (3, 4), (1, 1), and (7, 7)" << endl;
+    cout << b << endl;
 
-    b.movePiece(0, 1, 0, 0);
-    b.movePiece(1, 2, 1, 3);
+    cout << "Moving (3, 5) to (1, 1) and (1, 3) to (1, 5)" << endl;
+    b.movePiece(3, 5, 1, 1);
+    b.movePiece(1, 3, 1, 5);
 
-    cout << endl << endl << endl << b;
+    cout << b << endl << endl << endl;
 }
 
 

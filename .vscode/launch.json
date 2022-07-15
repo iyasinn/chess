@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceFolder}/piece_test.exe",
+            "program": "${workspaceFolder}/board_test.exe",
             "args": [],
             "cwd": "${workspaceFolder}"
         }
