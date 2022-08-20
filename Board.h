@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cassert>
 #include <ostream>
-#include <optional>
 
 template<int BOARD_SIZE>
 bool inBoard(const int row, const int col){
@@ -9,7 +8,6 @@ bool inBoard(const int row, const int col){
 }
 
 template<typename T, int BOARD_SIZE>
-
 class Board{
 
 public:
@@ -26,10 +24,14 @@ Board(){
 // REQUIRES: Pieces is a pointer to a dynamically allocated object, row and col are valid coordinates
 //           Note: the coordinates must be actual coordinates, don't worry about underlying array 
 // MODIFIES: board
-// EFFECTS: Places the piece at that specfic spot. 
+// EFFECTS: Places the piece at that specfic spot. If piece exists in spot, replaces it with the new piece.  
 void placePiece(T* piece, int row, int col){
     // Reindexing the row/col and seeing if it's in the board
     assert(piece && inBoard<BOARD_SIZE>(row -= 1, col -= 1));
+
+    if (board[row][col]){
+        removePiece(row, col);
+    }
     board[row][col] = piece;
 }
 
@@ -49,28 +51,34 @@ void removePiece(int row, int col){
 // MODIFIES: board
 // EFFECTS: Moves the piece at (row, col) to (endRow, endCol). If there is a piece at (endRow, endCol), 
 //          then the piece at (endRow, endCol) is removed. 
-void movePiece(int row, int col, int endRow, int endCol){
+bool movePiece(int row, int col, int endRow, int endCol){
     // Basic checks
     // Don't need to reassign row and col by subtracting one because removePiece and 
     // placePiece to thats
-    assert(inBoard<BOARD_SIZE>(row - 1, col - 1) 
-            && inBoard<BOARD_SIZE>(endRow - 1, endCol - 1)
+    assert(inBoard<BOARD_SIZE>(row -= 1, col -= 1) 
+            && inBoard<BOARD_SIZE>(endRow -=1, endCol -= 1)
             && board[row][col]);
+
+    if ((row == endRow && col == endCol) || (!board[row][col])) return false;
     
-    removePiece(endRow, endCol);
-    placePiece(board[row - 1][col - 1], endRow, endCol);
-    board[row - 1][col - 1] = nullptr;
+    board[endRow][endCol] = board[row][col];
+    board[row][col] = nullptr;
+    return true;
 }
 
 // REQUIRES: row and col are valid coordinates
 // MODIFIES: N/A
 // EFFECTS: Returns an optional value for the type if it exists at the coordinages. If nothing exists
 //          then an empty value is returned. 
-std::optional<T> operator ()(int row, int col) const{
+T* operator ()(int row, int col) const{
     assert(inBoard<BOARD_SIZE>(row -= 1, col -= 1));
-    if (board[row][col]) return *(board[row][col]);
-    return {};
+    if (board[row][col]) {
+        return board[row][col];
+    }
+    return nullptr;
 }
+
+// Why do I need to return T rather than T*?
 
 // EFFECTS: Destructor for the object
 ~Board(){
@@ -100,8 +108,8 @@ std::ostream& operator<<(std::ostream& os, const Board<T, BOARD_SIZE>& board) {
         os << std::endl << " " << row << "| ";
         for (int col = 1; col <= BOARD_SIZE; col++){
             
-            if (board(row, col).has_value()){
-                os << board(row, col).value() << " ";
+            if (board(row, col)){
+                os << board(row, col) << " ";
             }
             else {
                 os << "  ";
@@ -122,7 +130,7 @@ std::ostream& operator<<(std::ostream& os, const Board<T, BOARD_SIZE>& board) {
     os << "    ";
 
     for (int col = 1; col <= BOARD_SIZE; col++){
-        os << col << " ";
+        os << " " << col << "  ";
     }
 
     return os;

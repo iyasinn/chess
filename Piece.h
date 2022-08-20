@@ -62,6 +62,62 @@ public:
     std::pair<bool, std::string> validMove(int dx, int dy) const override;
 };
 
+
+Piece* pieceFactory(std::string name, std::string color);
+
+inline std::ostream& operator<<(std::ostream& os, Piece* ptr){
+
+    os << "\033[1;31m";
+
+    if (ptr->getColor() == WHITE){
+        os << "\033[1;36m";
+    }
+
+    if (ptr->getName() == QUEEN){
+        os << " ♛ ";
+    }
+    else if (ptr->getName() == KING){
+        os << " ♚ ";
+    }
+    else if (ptr->getName() == PAWN){
+        os << " ♟ ";
+    }
+    else if (ptr->getName() == BISHOP){
+        os << " ♝ ";
+    }
+    else if (ptr->getName() == KNIGHT){
+        os << " ♞ ";
+    }
+    else if (ptr->getName() == ROOK){
+        os << " ♜ ";
+    }
+
+    os << "\033[0m";
+
+    return os;
+}
+
+// ╔═╤═╤═╤═╤═╤═╤═╤═╗
+// ║♜│♞│♝│♛│♚│♝│♞│♜║
+// ╟─┼─┼─┼─┼─┼─┼─┼─╢
+// ║♟│♟│♟│♟│♟│♟│♟│♟║
+// ╟─┼─┼─┼─┼─┼─┼─┼─╢
+// ║ │░│ │░│ │░│ │░║
+// ╟─┼─┼─┼─┼─┼─┼─┼─╢
+// ║░│ │░│ │░│ │░│ ║
+// ╟─┼─┼─┼─┼─┼─┼─┼─╢
+// ║ │░│ │░│ │░│ │░║
+// ╟─┼─┼─┼─┼─┼─┼─┼─╢
+// ║░│ │░│ │░│ │░│ ║
+// ╟─┼─┼─┼─┼─┼─┼─┼─╢
+// ║♙│♙│♙│♙│♙│♙│♙│♙║
+// ╟─┼─┼─┼─┼─┼─┼─┼─╢
+// ║♖│♘│♗│♕│♔│♗│♘│♖║
+// ╚═╧═╧═╧═╧═╧═╧═╧═╝
+
+
+
+
 /*
 What do I need in a good chess piece?
 To be honest, I definitely need name and color, but what else? 

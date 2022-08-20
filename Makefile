@@ -37,8 +37,8 @@ board_test.exe:
 piece_test.exe:
 	$(CXX) $(CXXFLAGS) piece_test.cpp Piece.cpp -o $@
 
-BinarySearchTree_tests.exe: BinarySearchTree_tests.cpp BinarySearchTree.h
-	$(CXX) $(CXXFLAGS) $< -o $@
+chess.exe:
+	$(CXX) $(CXXFLAGS) Piece.cpp game.cpp -o $@
 
 # disable built-in rules
 .SUFFIXES:

@@ -1,20 +1,13 @@
 #include <iostream>
+
+
+
 using namespace std;
-#include <optional>
-
-optional<int> test(int x){
-
-    if (x > 10){
-        return 100;
-    }
-    return {};
-}
 
 int main() {
 
-    cout << test(1).has_value() << "\n\n\n\n\n";
-    cout << "LOL WHAT A TRASHCAN\n\n\n\n\n";
-  
+    cout << "hello";
+
 }
 /*
 

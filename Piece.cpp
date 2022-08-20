@@ -77,3 +77,27 @@ pair<bool, string> Rook::validMove(int dx, int dy) const{
     }
     return make_pair(false, "none");
 }
+
+Piece* pieceFactory(std::string name, std::string color){
+    if (name == KING){
+        return new King(color);
+    }
+    else if (name == QUEEN){
+        return new Queen(color);
+    }
+    else if (name == BISHOP){
+        return new Bishop(color);
+    }
+    else if (name == KNIGHT){
+        return new Knight(color);
+    }
+    else if (name == ROOK){
+        return new Rook(color);
+    }
+    else if (name == PAWN){
+        return new Pawn(color);
+    }
+
+    assert(false);
+    return nullptr;
+}
