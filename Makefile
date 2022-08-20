@@ -37,7 +37,7 @@ board_test.exe:
 piece_test.exe:
 	$(CXX) $(CXXFLAGS) piece_test.cpp Piece.cpp -o $@
 
-chess.exe:
+game.exe:
 	$(CXX) $(CXXFLAGS) Piece.cpp game.cpp -o $@
 
 # disable built-in rules
